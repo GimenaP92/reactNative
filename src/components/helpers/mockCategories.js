@@ -1,0 +1,62 @@
+export const mockCategories = {
+  vuelos: [
+    {
+      id: 1,
+      title: "Vuelo Lima - Cusco",
+      description: "Despegá hacia la aventura andina.",
+        image1: "https://media.gq.com.mx/photos/620e915c43f71a078a35533f/master/pass/playa.jpg",
+    },
+    {
+      id: 2,
+      title: "Vuelo Buenos Aires - Lima",
+      description: "Conectando culturas sudamericanas.",
+      image1: "https://media.vogue.mx/photos/5c0712bceccb76ff7079fef1/master/pass/playas__2473.jpg",
+    },
+    {
+      id: 3,
+      title: "Vuelo Santiago - Arequipa",
+      description: "Explorá la ciudad blanca del Perú.",
+      image1: "https://media.staticontent.com/media/pictures/425e5a0f-faa0-4a23-a8a7-fb7edd59dbf4",
+    },
+  ],
+  alojamientos: [
+    {
+      id: 4,
+      title: "Hotel en Cusco",
+      description: "Comodidad en el corazón del imperio inca.",
+      image1: "https://example.com/hotel1.jpg",
+    },
+    {
+      id: 5,
+      title: "Hostal en Aguas Calientes",
+      description: "Ideal para mochileros rumbo a Machu Picchu.",
+      image1: "https://example.com/hotel2.jpg",
+    },
+    {
+      id: 6,
+      title: "Resort en Valle Sagrado",
+      description: "Lujo rodeado de naturaleza y cultura.",
+      image1: "https://example.com/hotel3.jpg",
+    },
+  ],
+  paquetes: [
+    {
+      id: 7,
+      title: "Paquete Machu Picchu Full",
+      description: "Incluye vuelo, hotel y tour guiado.",
+      image1: "https://example.com/paquete1.jpg",
+    },
+    {
+      id: 8,
+      title: "Cusco + Valle Sagrado",
+      description: "Una semana de historia y paisajes únicos.",
+      image1: "https://example.com/paquete2.jpg",
+    },
+    {
+      id: 9,
+      title: "Aventura Inca 5 días",
+      description: "Trekking, cultura y gastronomía.",
+      image1: "https://example.com/paquete3.jpg",
+    },
+  ],
+};
