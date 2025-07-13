@@ -1,42 +1,32 @@
-import React from 'react'; 
+import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const CategoryButtons = ({ onSelectCategory }) => {
+const iconMap = {
+  vuelos: 'airplane-outline',
+  alojamientos: 'bed-outline',
+  paquetes: 'briefcase-outline',
+};
+
+const CategoryButtons = ({ categories, onSelectCategory }) => {
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => onSelectCategory('vuelos')}>
-          <View style={styles.iconWrapper}>
-            <Ionicons name="airplane-outline" size={28} color="#333" />
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.label}>Vuelos</Text>
-      </View>
-
-      <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => onSelectCategory('alojamientos')}>
-          <View style={styles.iconWrapper}>
-            <Ionicons name="bed-outline" size={28} color="#333" />
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.label}>Alojamientos</Text>
-      </View>
-
-      <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => onSelectCategory('paquetes')}>
-          <View style={styles.iconWrapper}>
-            <Ionicons name="briefcase-outline" size={28} color="#333" />
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.label}>Paquetes</Text>
-      </View>
+      {categories.map(cat => (
+        <View style={styles.iconContainer} key={cat}>
+          <TouchableOpacity onPress={() => onSelectCategory(cat)}>
+            <View style={styles.iconWrapper}>
+              <Ionicons name={iconMap[cat] || 'help-circle-outline'} size={28} color="#333" />
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.label}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</Text>
+        </View>
+      ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-   container: {
+  container: {
     flexDirection: 'row',    
     paddingVertical: 20,
     justifyContent: 'space-around',
@@ -51,12 +41,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     backgroundColor: '#fff',
-    // Sombra iOS
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    // Sombra Android
     elevation: 5,
   },
   label: {

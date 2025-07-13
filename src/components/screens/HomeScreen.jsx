@@ -5,8 +5,12 @@ import CustomCarousel from '../Home/CustomCarousel';
 import OffersCarousel from '../Home/OffersCarousel';
 import RefundPolicyCard from '../Home/RefundPolicyCard';
 import ContactInfoCard from '../Home/ContactInfoCard';
+import { useSelector } from 'react-redux';
 
 const HomeScreen = ({ navigation }) => {
+ 
+  const categoriesObject = useSelector(state => state.shop.categories);
+  const categories = Object.keys(categoriesObject);
   const handleCategorySelect = (category) => {
     navigation.navigate('CategoryScreen', { category });
   };
@@ -14,7 +18,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Tu aventura empieza aquí</Text>
-      <CategoryButtons onSelectCategory={handleCategorySelect} />
+       <CategoryButtons categories={categories} onSelectCategory={handleCategorySelect} />
       <View style={{ marginBottom: 20 }}>
         <CustomCarousel />
       </View>

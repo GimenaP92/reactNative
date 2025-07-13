@@ -1,24 +1,31 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons'; 
 
 const Header = () => {
   const navigation = useNavigation();
+  const canGoBack = navigation.canGoBack();
 
   const handlePress = () => {
     navigation.navigate('HomeScreen');
   };
 
   return (
-    <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      {canGoBack && (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+          <Ionicons name="arrow-back" size={24} color="#f0eceb" />
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity onPress={handlePress} activeOpacity={0.8} style={styles.brand}>
         <Image
           source={require('../../assets/logo.png')}
           style={styles.logo}
         />
         <Text style={styles.text}>TravelToWorld</Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -28,8 +35,16 @@ const styles = StyleSheet.create({
     height: 100,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop:20,
+    paddingTop: 20,
     paddingHorizontal: 20,
+  },
+  brand: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  backIcon: {
+    padding: 8,
   },
   logo: {
     width: 50,

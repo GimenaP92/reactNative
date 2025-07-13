@@ -1,29 +1,27 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 import Card from '../common/Card';
-import { mockCategories } from '../helpers/mockCategories';
-
+import { useSelector } from 'react-redux';
 
 const CategoryCards = ({ selectedCategory }) => {
-  if (!selectedCategory) return null;
+  const categories = useSelector(state => state.shop.categories);
 
-  const data = mockCategories[selectedCategory];
+  if (!selectedCategory || !categories[selectedCategory]) return null;
+
+  const data = categories[selectedCategory];
 
   return (
     <View style={{ flex: 1 }}>
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <Card
-            id={item.id}
-            title={item.title}
-            description={item.description}
-            image1={item.image1}
-            onPress={() => console.log(`${item.title} presionado`)}
-          />
-        )}
-      />
+      {data.map((item) => (
+        <Card
+          key={item.id}
+          id={item.id}
+          title={item.title}
+          description={item.description}
+          image1={item.image1}
+          onPress={() => console.log(`${item.title} presionado`)}
+        />
+      ))}
     </View>
   );
 };
