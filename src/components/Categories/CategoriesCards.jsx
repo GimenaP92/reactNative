@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Card from '../common/Card';
 import { useSelector } from 'react-redux';
 
+
 const CategoryCards = ({ selectedCategory }) => {
   const categories = useSelector(state => state.shop.categories);
 

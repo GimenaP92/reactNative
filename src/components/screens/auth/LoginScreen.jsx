@@ -1,24 +1,47 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import Input from '../common/Input';
-import Button from '../common/Button';
+import Input from '../../common/Input';
+import Button from '../../common/Button';
+import { useLoginMutation } from '../../../services/auth/authApi';
+import { setUser } from '../../../features/user/userSlice';
+import { useDispatch } from 'react-redux';
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('');
+const LoginScreen = ({ navigation, route }) => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [triggerLogin] = useLoginMutation();
+  const dispatch = useDispatch();
+  const { redirectTo } = route.params || {};
 
-  const handleLogin = () => {
-    if (!username || !password) {
-      alert('Por favor ingresa usuario y contraseña');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert('Por favor ingresa email y contraseña');
       return;
     }
+
     setLoading(true);
-    // Simula llamada a backend
-    setTimeout(() => {
+
+    try {
+      const result = await triggerLogin({
+        email,
+        password,
+        returnSecureToken: true,
+      }).unwrap();
+
+      dispatch(setUser(result.email));
+
+      if (redirectTo) {
+        navigation.navigate(redirectTo);
+      } else {
+        navigation.navigate('Home');
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Email o contraseña incorrectos.");
+    } finally {
       setLoading(false);
-      navigation.navigate('Home'); // Cambia 'Home' por el nombre correcto de tu pantalla principal
-    }, 2000);
+    }
   };
 
   return (
@@ -29,9 +52,9 @@ const LoginScreen = ({ navigation }) => {
       </Text>
 
       <Input
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Usuario"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Email"
         autoCapitalize="none"
         editable={!loading}
       />
@@ -48,10 +71,10 @@ const LoginScreen = ({ navigation }) => {
         onPress={handleLogin}
         disabled={loading}
       />
-      
+
       {loading && <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />}
 
-      <TouchableOpacity disabled={loading} onPress={() => navigation.navigate('Register')}>
+      <TouchableOpacity disabled={loading} onPress={() => navigation.navigate('RegisterScreen')}>
         <Text style={styles.registerText}>
           ¿Aún no tienes cuenta?{' '}
           <Text style={styles.linkText}>Regístrate aquí</Text>

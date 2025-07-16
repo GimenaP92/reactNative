@@ -2,9 +2,28 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const HeaderDown = ({ onAction }) => {
     const navigation = useNavigation();
+    const isLoggedIn = useSelector(state => !!state.user.userEmail);
+
+     const handleCartPress = () => {
+    if (isLoggedIn) {
+      navigation.navigate('CartScreen');
+    } else {
+      navigation.navigate('LoginScreen', { redirectTo: 'CartScreen' });
+    }
+  };
+
+  const handleAccountPress = () => {
+    if (isLoggedIn) {
+      navigation.navigate('MyAccountScreen');
+    } else {
+      navigation.navigate('LoginScreen', { redirectTo: 'MyAccountScreen' });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
@@ -16,7 +35,7 @@ const HeaderDown = ({ onAction }) => {
       </View>
 
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('CartScreen')}>
+         <TouchableOpacity onPress={handleCartPress}>
           <View style={styles.iconWrapper}>
             <Ionicons name="cart-outline" size={28} color="#333" />
           </View>
@@ -24,7 +43,7 @@ const HeaderDown = ({ onAction }) => {
       </View>
 
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('MyAccountScreen')}>
+       <TouchableOpacity onPress={handleAccountPress}>
           <View style={styles.iconWrapper}>
             <Ionicons name="person-outline" size={28} color="#333" />
           </View>

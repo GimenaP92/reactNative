@@ -1,9 +1,27 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,  ActivityIndicator } from 'react-native';
 import { userProfile } from '../helpers/mockCuenta';
+import { useDispatch } from 'react-redux';
+import { clearUser } from '../../features/user/userSlice';
+import { useNavigation } from '@react-navigation/native';
+
 
 const MyAccountScreen = () => {
   const { firstName, lastName, nationality, email, phone, birthdate, avatar } = userProfile;
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+ const handleLogout = () => {
+  setLoading(true);
+  setTimeout(() => {
+    dispatch(clearUser());
+    setLoading(false);
+    navigation.navigate('LoginScreen');
+  }, 1000); 
+};
+
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -36,7 +54,22 @@ const MyAccountScreen = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Editar Perfil</Text>
       </TouchableOpacity>
-    </ScrollView>
+      <TouchableOpacity
+      style={[styles.button, { backgroundColor: '#36173d', marginTop: 20 }]}
+      onPress={handleLogout}
+      disabled={loading}
+    >
+      <Text style={styles.buttonText}>
+        {loading ? '' : 'Cerrar sesión'}
+      </Text>
+    </TouchableOpacity>
+
+    {loading && (
+      <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />
+    )}
+
+
+        </ScrollView>
   );
 };
 
