@@ -1,64 +1,62 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import Input from '../../common/Input';
 import Button from '../../common/Button';
 import { useSignupMutation } from '../../../services/auth/authApi';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../../features/user/userSlice';
 
+
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
 
   const [triggerSignup] = useSignupMutation();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const allFieldsFilled = email.trim() !== '' && password.trim() !== '' && confirmPassword.trim() !== '';
-    const passwordsMatch = password === confirmPassword;
-    const emailValid = email.includes('@');
-
-    setIsFormValid(allFieldsFilled && passwordsMatch && emailValid);
-  }, [email, password, confirmPassword]);
+  const isFormValid = email.trim() !== '' && password.trim() !== '' && confirmPassword.trim() !== '' &&
+    password === confirmPassword && email.includes('@');
 
   const handleRegister = async () => {
-    if (!isFormValid) {
-      if (!email || !password || !confirmPassword) {
-        Alert.alert('Por favor completa todos los campos.');
-        return;
-      }
-      if (!email.includes('@')) {
-        Alert.alert('Correo inválido.');
-        return;
-      }
-      if (password !== confirmPassword) {
-        Alert.alert('Las contraseñas no coinciden.');
-        return;
-      }
-    }
+  if (!isFormValid) {
+    Alert.alert('Error', 'Por favor completa los campos correctamente.');
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const result = await triggerSignup({
-        email,
-        password,
-        returnSecureToken: true,
-      }).unwrap();
+  try {
+    const result = await triggerSignup({
+      email,
+      password,
+      returnSecureToken: true,
+    }).unwrap();
 
-      dispatch(setUser(result.email));
-      Alert.alert('Éxito', '¡Registro completado con éxito!');
-      navigation.navigate('Home');
-    } catch (error) {
-      console.error('Error de registro:', error);
-      Alert.alert('Error', 'No se pudo registrar. Intenta con otro correo.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Asegúrate que localId exista en result, si no, ajusta según lo que te devuelva la API
+    dispatch(setUser({
+      userEmail: result.email,
+      localId: result.localId,
+      profileImage: null,  // Al registrarte no hay foto aún
+    }));
+
+    navigation.navigate('HomeScreen');
+  } catch (error) {
+    console.error('Error completo:', JSON.stringify(error, null, 2));
+    const errorMessage = getFirebaseErrorMessage(error?.data?.error?.message);
+    Alert.alert('Error de registro', errorMessage);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
@@ -102,7 +100,7 @@ const RegisterScreen = ({ navigation }) => {
       />
       {loading && <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />}
 
-      <TouchableOpacity disabled={loading} onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity disabled={loading} onPress={() => navigation.navigate('LoginScreen')}>
         <Text style={styles.registerText}>
           ¿Ya tienes una cuenta? <Text style={styles.linkText}>Inicia sesión aquí</Text>
         </Text>

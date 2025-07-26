@@ -77,31 +77,37 @@ const CartScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Tu carrito de compras</Text>
-      <FlatList
-        data={cartItems}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      />
+      <Text style={styles.header}>Carrito de compras</Text>
+         {cartItems.length === 0 ? (
+      <Text style={styles.emptyText}>Aún no tienes productos en el carrito.</Text>
+    ) : (
+      <>
+        <FlatList
+          data={cartItems}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
 
-      <View style={styles.footer}>
-        <Text style={styles.total}>Total: ${totalPrice.toFixed(2)}</Text>
+        <View style={styles.footer}>
+          <Text style={styles.total}>Total: ${totalPrice.toFixed(2)}</Text>
 
-        <TouchableOpacity
-          style={[styles.payButton, loading && { opacity: 0.6 }]}
-          onPress={handleCheckout}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.payText}>Pagar ahora</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
+          <TouchableOpacity
+            style={[styles.payButton, loading && { opacity: 0.6 }]}
+            onPress={handleCheckout}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.payText}>Pagar ahora</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </>
+    )}
+  </View>
+);
 };
 
 const styles = StyleSheet.create({

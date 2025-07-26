@@ -6,3 +6,4 @@ export {default as CartScreen} from './CartScreen';
 export {default as OrderHistoryScreen} from './OrderHistoryScreen';
 export {default as LoginScreen} from './auth/LoginScreen';
 export {default as RegisterScreen} from './auth/RegisterScreen';
+export {default as EditProfileScreen} from './EditProfileScreen';

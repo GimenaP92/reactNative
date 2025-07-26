@@ -5,12 +5,15 @@ import Button from '../../common/Button';
 import { useLoginMutation } from '../../../services/auth/authApi';
 import { setUser } from '../../../features/user/userSlice';
 import { useDispatch } from 'react-redux';
+import { useLazyGetProfilePictureQuery, userApi } from '../../../services/user/userApi';
+
 
 const LoginScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [triggerLogin] = useLoginMutation();
+  const [triggerGetProfilePicture] = useLazyGetProfilePictureQuery();
   const dispatch = useDispatch();
   const { redirectTo } = route.params || {};
 
@@ -23,18 +26,29 @@ const LoginScreen = ({ navigation, route }) => {
     setLoading(true);
 
     try {
+      // 1. Login
       const result = await triggerLogin({
         email,
         password,
         returnSecureToken: true,
       }).unwrap();
 
-      dispatch(setUser(result.email));
+      // 2. Traer imagen con lazy query
+      const profileResponse = await triggerGetProfilePicture(result.localId).unwrap();
+
+      const profileImage = profileResponse?.profileImage || null;
+
+      // 3. Guardar en redux todo junto
+      dispatch(setUser({
+        userEmail: result.email,
+        localId: result.localId,
+        profileImage,
+      }));
 
       if (redirectTo) {
         navigation.navigate(redirectTo);
       } else {
-        navigation.navigate('Home');
+        navigation.navigate('HomeScreen');
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -43,6 +57,8 @@ const LoginScreen = ({ navigation, route }) => {
       setLoading(false);
     }
   };
+
+
 
   return (
     <View style={styles.container}>

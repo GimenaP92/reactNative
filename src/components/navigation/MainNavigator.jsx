@@ -9,8 +9,11 @@ import HeaderDown from '../Header/HeaderDown';
 import { View, StyleSheet } from 'react-native';
 
 export default function MainNavigator() {
-  const userEmail = useSelector(state => state.user.userEmail);
+ const userEmail = useSelector(state => state.user.userEmail);
+const localId = useSelector(state => state.user.localId);
 
+  console.log("user email", userEmail);
+  console.log("local id", localId);
   return (
     <NavigationContainer>
       <View style={styles.container}>

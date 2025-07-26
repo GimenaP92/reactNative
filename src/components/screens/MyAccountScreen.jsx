@@ -1,75 +1,140 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView,  ActivityIndicator } from 'react-native';
-import { userProfile } from '../helpers/mockCuenta';
-import { useDispatch } from 'react-redux';
-import { clearUser } from '../../features/user/userSlice';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser, setProfileImage } from '../../features/user/userSlice';
 import { useNavigation } from '@react-navigation/native';
-
+import CameraIcon from '../common/CameraIcon';
+import * as ImagePicker from 'expo-image-picker';
+import { uploadImageToCloudinary } from '../../cloudinary/uploadImage';
+import { usePutProfilePictureMutation, useGetProfilePictureQuery, useGetUserDataQuery } from '../../services/user/userApi';
 
 const MyAccountScreen = () => {
-  const { firstName, lastName, nationality, email, phone, birthdate, avatar } = userProfile;
+  const userEmail = useSelector((state) => state.user.userEmail) || '';
+  const localId = useSelector((state) => state.user.localId) || null;
+  const profileImage = useSelector((state) => state.user.profileImage) || null;
+
+  const { data: profileData } = useGetProfilePictureQuery(localId, { skip: !localId });
+  const { data: userData, isLoading: userDataLoading } = useGetUserDataQuery(localId, { skip: !localId });
+
+  const [putProfilePicture] = usePutProfilePictureMutation();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
- const handleLogout = () => {
-  setLoading(true);
-  setTimeout(() => {
-    dispatch(clearUser());
-    setLoading(false);
-    navigation.navigate('LoginScreen');
-  }, 1000); 
-};
+  // Actualizar la imagen de perfil en el store cuando cambie profileData
+  useEffect(() => {
+    if (profileData?.profileImage) {
+      dispatch(setProfileImage(profileData.profileImage));
+    }
+  }, [profileData, dispatch]);
 
+  const handleLogout = () => {
+    setLoading(true);
+    setTimeout(() => {
+      dispatch(clearUser());
+      setLoading(false);
+      navigation.navigate('LoginScreen');
+    }, 1000);
+  };
 
+  // Función para abrir cámara y tomar foto
+  const pickImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      const localUri = result.assets[0].uri;
+      setLoading(true);
+      try {
+        const downloadUrl = await uploadImageToCloudinary(localUri);
+        console.log('Cloudinary URL:', downloadUrl);
+
+        const response = await putProfilePicture({ localId, profileImage: downloadUrl }).unwrap();
+        console.log("Respuesta putProfilePicture:", response);
+
+        dispatch(setProfileImage(downloadUrl));
+      } catch (error) {
+        alert('Error al subir la imagen.');
+        console.error('Error en putProfilePicture:', error);
+        if (error.data) console.error('Error data:', error.data);
+        if (error.status) console.error('Error status:', error.status);
+      }
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.avatarWrapper}>
-         <Image source={{ uri: userProfile.avatar }} style={styles.avatar} />
+        {profileImage ? (
+          <Image source={{ uri: profileImage }} style={styles.avatar} />
+        ) : (
+          <View
+            style={[
+              styles.avatar,
+              { backgroundColor: '#ccc', justifyContent: 'center', alignItems: 'center' },
+            ]}
+          >
+            <Text style={{ color: '#666' }}>No hay foto</Text>
+          </View>
+        )}
+
+        <TouchableOpacity
+          onPress={pickImage}
+          style={styles.cameraIconWrapper}
+          activeOpacity={0.7}
+          accessibilityLabel="Tomar foto de perfil"
+        >
+          <CameraIcon />
+        </TouchableOpacity>
       </View>
 
-      <Text style={styles.name}>{firstName} {lastName}</Text>
+      <Text style={styles.name}>{userEmail || 'Usuario'}</Text>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Nacionalidad</Text>
-        <Text style={styles.info}>{nationality}</Text>
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Email</Text>
-        <Text style={styles.info}>{email}</Text>
+        <Text style={styles.label}>ID de usuario</Text>
+        <Text style={styles.info}>{localId || ''}</Text>
       </View>
 
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Teléfono</Text>
-        <Text style={styles.info}>{phone}</Text>
+        <Text style={styles.info}>{userData?.phone }</Text>
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Fecha de nacimiento</Text>
-        <Text style={styles.info}>{birthdate}</Text>
+        <Text style={styles.label}>Dirección</Text>
+        <Text style={styles.info}>{userData?.address }</Text>
       </View>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('EditProfileScreen')}
+      >
         <Text style={styles.buttonText}>Editar Perfil</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
-      style={[styles.button, { backgroundColor: '#36173d', marginTop: 20 }]}
-      onPress={handleLogout}
-      disabled={loading}
-    >
-      <Text style={styles.buttonText}>
-        {loading ? '' : 'Cerrar sesión'}
-      </Text>
-    </TouchableOpacity>
+        style={[styles.button, { backgroundColor: '#36173d', marginTop: 20 }]}
+        onPress={handleLogout}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>{loading ? '' : 'Cerrar sesión'}</Text>
+      </TouchableOpacity>
 
-    {loading && (
-      <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />
-    )}
-
-
-        </ScrollView>
+      {loading && <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />}
+    </ScrollView>
   );
 };
 
@@ -82,6 +147,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   avatarWrapper: {
+    position: 'relative',
     shadowColor: '#ff4845',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
@@ -89,14 +155,23 @@ const styles = StyleSheet.create({
     elevation: 10,
     marginBottom: 25,
   },
-   avatar: {
+  avatar: {
     width: 120,
     height: 120,
     borderRadius: 60,
     marginBottom: 20,
   },
+  cameraIconWrapper: {
+    position: 'absolute',
+    bottom: 5,
+    right: -5,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 6,
+    elevation: 6,
+  },
   name: {
-    fontSize: 28,
+    fontSize: 15,
     fontWeight: '700',
     color: '#36173d',
     marginBottom: 35,

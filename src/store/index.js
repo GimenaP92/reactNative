@@ -18,6 +18,7 @@ import userReducer from "../features/user/userSlice";
 import ordersReducer from "../features/orders/ordersSlice";
 import { authApi } from "../services/auth/authApi";
 import { shopApi } from "../services/shop/shopApi";
+import { userApi } from "../services/user/userApi";
 
 // 1. Combinar reducers
 const rootReducer = combineReducers({
@@ -27,6 +28,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   [authApi.reducerPath]: authApi.reducer,
   [shopApi.reducerPath]: shopApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
+
 });
 
 
@@ -47,7 +50,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authApi.middleware, shopApi.middleware),
+    }).concat(authApi.middleware, shopApi.middleware, userApi.middleware),
 });
 
 export const persistor = persistStore(store); 
