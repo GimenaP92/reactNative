@@ -9,7 +9,7 @@ const ordersSlice = createSlice({
     addOrder: (state, action) => {
       state.list.push(action.payload);
     },
-    // otras acciones que necesites...
+ 
   }
 });
 

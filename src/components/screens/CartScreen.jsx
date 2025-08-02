@@ -5,11 +5,16 @@ import { removeFromCart, updateQuantity, clearCart } from '../../features/cart/c
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { addOrder } from '../../features/orders/ordersSlice';
+import HeaderDown from '../Header/HeaderDown';
+
+const FOOTER_HEIGHT = 70; 
+
 
 const CartScreen = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const userId = useSelector((state) => state.user.localId);
 
   const [loading, setLoading] = useState(false);
 
@@ -35,6 +40,7 @@ const CartScreen = () => {
 
   setTimeout(() => {
     dispatch(addOrder({
+       userId,
       items: cartItems,
       total: totalPrice,
       date: new Date().toISOString(),
@@ -70,28 +76,31 @@ const CartScreen = () => {
           <TouchableOpacity onPress={() => handleQuantityChange(item.id, (item.quantity ?? 1) + 1)}>
             <Ionicons name="add-circle-outline" size={22} color="#333" />
           </TouchableOpacity>
+
         </View>
       </View>
     </View>
   );
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Carrito de compras</Text>
-         {cartItems.length === 0 ? (
-      <Text style={styles.emptyText}>Aún no tienes productos en el carrito.</Text>
+return (
+  <View style={styles.container}>
+    <Text style={styles.header}>Carrito de compras</Text>
+
+    {cartItems.length === 0 ? (
+      <>
+        <Text style={styles.emptyText}>Aún no tienes productos en el carrito.</Text>
+      </>
     ) : (
       <>
         <FlatList
           data={cartItems}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: FOOTER_HEIGHT + 100 }}
         />
 
         <View style={styles.footer}>
           <Text style={styles.total}>Total: ${totalPrice.toFixed(2)}</Text>
-
           <TouchableOpacity
             style={[styles.payButton, loading && { opacity: 0.6 }]}
             onPress={handleCheckout}
@@ -106,12 +115,17 @@ const CartScreen = () => {
         </View>
       </>
     )}
+
+    {/* HeaderDown siempre visible */}
+    <View style={styles.headerDownWrapper}>
+      <HeaderDown />
+    </View>
   </View>
 );
-};
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 15, backgroundColor: '#fff',  position: 'relative', },
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, color: '#333' },
   emptyText: { fontSize: 18, color: '#999' },
   itemContainer: {
@@ -140,16 +154,18 @@ const styles = StyleSheet.create({
   },
   quantity: { fontSize: 16, fontWeight: '600', color: '#333' },
   footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#eee',
-    padding: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+  position: 'absolute',
+  bottom: FOOTER_HEIGHT, // justo arriba del headerDown
+  left: 0,
+  right: 0,
+  backgroundColor: '#eee',
+  padding: 15,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  zIndex: 10,
+},
+
   total: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   controls: {
     flexDirection: 'row',
@@ -183,6 +199,17 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   payText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
+headerDownWrapper: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  height: FOOTER_HEIGHT,
+  backgroundColor: '#EAEAEA',
+  zIndex: 11,
+},
+
+
 });
 
 export default CartScreen;

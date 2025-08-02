@@ -1,25 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import Header from './src/components/Header/Header';
 import StackNavigator from './src/components/navigation/StackNavigator';
-import HeaderDown from './src/components/Header/HeaderDown';
 import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react'; 
-import store, { persistor } from './src/store';
+import store from './src/store';
+import { initSessionTable } from './src/db';
 
 
 export default function App() {
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      try {
+        await initSessionTable();
+        console.log('Tabla session creada o ya existente.');
+      } catch (error) {
+        console.error('Error al inicializar la base de datos:', error);
+      }
+    };
+
+    initializeDatabase();
+  }, []);
+
   return (
     <Provider store={store}>
-       <PersistGate loading={null} persistor={persistor}>
       <NavigationContainer>
         <StatusBar barStyle="light-content" backgroundColor="#36173d" />
         <Header />
         <StackNavigator />
-        <HeaderDown />
-      </NavigationContainer>
-      </PersistGate>
+          </NavigationContainer>
     </Provider>
   );
 }

@@ -28,6 +28,9 @@
     "extra": {
       "CLOUDINARY_CLOUD_NAME": "dbtfna8ev",
       "CLOUDINARY_UPLOAD_PRESET": "user_photos"
-    }
+    },
+    "plugins": [
+      "expo-sqlite"
+    ]
   }
 }

@@ -1,64 +1,48 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator, Switch } from 'react-native';
 import Input from '../../common/Input';
 import Button from '../../common/Button';
 import { useLoginMutation } from '../../../services/auth/authApi';
 import { setUser } from '../../../features/user/userSlice';
 import { useDispatch } from 'react-redux';
-import { useLazyGetProfilePictureQuery, userApi } from '../../../services/user/userApi';
-
+import { clearSession, saveSession } from '../../../db';
 
 const LoginScreen = ({ navigation, route }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [persistSession, setPersistSession] = useState(false);
   const [triggerLogin] = useLoginMutation();
-  const [triggerGetProfilePicture] = useLazyGetProfilePictureQuery();
   const dispatch = useDispatch();
   const { redirectTo } = route.params || {};
 
-  const handleLogin = async () => {
+  const onSubmit = async () => {
     if (!email || !password) {
       alert('Por favor ingresa email y contraseña');
       return;
     }
 
     setLoading(true);
-
     try {
-      // 1. Login
-      const result = await triggerLogin({
-        email,
-        password,
-        returnSecureToken: true,
-      }).unwrap();
+      const result = await triggerLogin({ email, password }).unwrap();
+      const { userEmail, localId, profileImage, phone, address } = result;
 
-      // 2. Traer imagen con lazy query
-      const profileResponse = await triggerGetProfilePicture(result.localId).unwrap();
-
-      const profileImage = profileResponse?.profileImage || null;
-
-      // 3. Guardar en redux todo junto
-      dispatch(setUser({
-        userEmail: result.email,
-        localId: result.localId,
-        profileImage,
-      }));
-
-      if (redirectTo) {
-        navigation.navigate(redirectTo);
+      if (persistSession) {
+        await saveSession({ userEmail, localId, profileImage, phone, address });
       } else {
-        navigation.navigate('HomeScreen');
+        await clearSession();
       }
+
+      dispatch(setUser({ userEmail, localId, profileImage, phone, address }));
+      navigation.navigate(redirectTo || 'HomeScreen');
+
     } catch (error) {
-      console.error("Login error:", error);
-      alert("Email o contraseña incorrectos.");
+      alert('Email o contraseña incorrectos.');
+      console.error('Login failed:', error);
     } finally {
       setLoading(false);
     }
   };
-
-
 
   return (
     <View style={styles.container}>
@@ -82,9 +66,19 @@ const LoginScreen = ({ navigation, route }) => {
         editable={!loading}
       />
 
+      <View style={{ marginTop: 10, alignItems: 'center' }}>
+        <Text>¿Mantener sesión iniciada?</Text>
+        <Switch
+          onValueChange={() => setPersistSession(!persistSession)}
+          value={persistSession}
+           thumbColor={persistSession ? '#7b3f7b' : '#cda0d4'}
+             trackColor={{ false: '#ccc', true: '#cda0d4' }}
+        />
+      </View>
+
       <Button
         title={loading ? '' : 'Iniciar sesión'}
-        onPress={handleLogin}
+        onPress={onSubmit}
         disabled={loading}
       />
 

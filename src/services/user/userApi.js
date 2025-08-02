@@ -5,7 +5,7 @@ const baseURL = process.env.EXPO_PUBLIC_BASE_RTDB_URL
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({ baseUrl: baseURL }),
-    tagTypes: ['UserData'],
+    tagTypes: ['UserData'], 
   endpoints: (builder) => ({
     getProfilePicture: builder.query({
       query: (localId) => `profilePictures/${localId}.json`,

@@ -15,35 +15,51 @@ import CameraIcon from '../common/CameraIcon';
 import * as ImagePicker from 'expo-image-picker';
 import { uploadImageToCloudinary } from '../../cloudinary/uploadImage';
 import { usePutProfilePictureMutation, useGetProfilePictureQuery, useGetUserDataQuery } from '../../services/user/userApi';
+import { clearSession } from '../../db';
+import HeaderDown from '../Header/HeaderDown';
+
+
+const FOOTER_HEIGHT = 70; 
+
 
 const MyAccountScreen = () => {
-  const userEmail = useSelector((state) => state.user.userEmail) || '';
-  const localId = useSelector((state) => state.user.localId) || null;
-  const profileImage = useSelector((state) => state.user.profileImage) || null;
+const userEmail = useSelector((state) => state.user.userEmail) || '';
+const localId = useSelector((state) => state.user.localId) || null;
+const profileImage = useSelector((state) => state.user.profileImage) || null;
+const name = useSelector((state) => state.user.name) || '';
+const lastName = useSelector((state) => state.user.lastName) || '';
 
-  const { data: profileData } = useGetProfilePictureQuery(localId, { skip: !localId });
-  const { data: userData, isLoading: userDataLoading } = useGetUserDataQuery(localId, { skip: !localId });
+const { data: profileData } = useGetProfilePictureQuery(localId, { skip: !localId });
+const { data: userData, isLoading: userDataLoading } = useGetUserDataQuery(localId, { skip: !localId });
+
 
   const [putProfilePicture] = usePutProfilePictureMutation();
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  // Actualizar la imagen de perfil en el store cuando cambie profileData
+
   useEffect(() => {
     if (profileData?.profileImage) {
       dispatch(setProfileImage(profileData.profileImage));
     }
   }, [profileData, dispatch]);
 
-  const handleLogout = () => {
+ const handleLogout = async () => {
+  try {
+    await clearSession(); 
     setLoading(true);
+
     setTimeout(() => {
       dispatch(clearUser());
       setLoading(false);
       navigation.navigate('LoginScreen');
     }, 1000);
-  };
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+  }
+};
+
 
   // Función para abrir cámara y tomar foto
   const pickImage = async () => {
@@ -76,6 +92,7 @@ const MyAccountScreen = () => {
   };
 
   return (
+   <View style={{ flex: 1 }}>
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.avatarWrapper}>
         {profileImage ? (
@@ -103,10 +120,16 @@ const MyAccountScreen = () => {
 
       <Text style={styles.name}>{userEmail || 'Usuario'}</Text>
 
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>ID de usuario</Text>
-        <Text style={styles.info}>{localId || ''}</Text>
-      </View>
+    <View style={styles.infoContainer}>
+    <Text style={styles.label}>Nombre</Text>
+    <Text style={styles.info}>{userData?.name}</Text>
+  </View>
+
+  <View style={styles.infoContainer}>
+    <Text style={styles.label}>Apellido</Text>
+    <Text style={styles.info}>{userData?.lastName}</Text>
+  </View>
+
 
       <View style={styles.infoContainer}>
         <Text style={styles.label}>Teléfono</Text>
@@ -135,6 +158,10 @@ const MyAccountScreen = () => {
 
       {loading && <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />}
     </ScrollView>
+       <View style={styles.headerDownWrapper}>
+            <HeaderDown />
+          </View>
+            </View>
   );
 };
 
@@ -220,6 +247,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     letterSpacing: 1.2,
   },
+    headerDownWrapper: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  height: FOOTER_HEIGHT,
+  backgroundColor: '#EAEAEA',
+  zIndex: 11,
+},
 });
 
 export default MyAccountScreen;

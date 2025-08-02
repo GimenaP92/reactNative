@@ -1,41 +1,39 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 
-const HeaderDown = ({ onAction }) => {
-    const navigation = useNavigation();
-    const isLoggedIn = useSelector(state => !!state.user.userEmail);
+const FOOTER_HEIGHT = 70;
 
-     const handleCartPress = () => {
-    if (isLoggedIn) {
-      navigation.navigate('CartScreen');
-    } else {
-      navigation.navigate('LoginScreen', { redirectTo: 'CartScreen' });
-    }
+const HeaderDown = () => {
+  const navigation = useNavigation();
+
+  const handleOrdersPress = () => {
+    navigation.navigate('OrderHistoryScreen')
+  }
+  
+  const handleCartPress = () => {
+    navigation.navigate('CartScreen');
   };
 
   const handleAccountPress = () => {
-    if (isLoggedIn) {
-      navigation.navigate('MyAccountScreen');
-    } else {
-      navigation.navigate('LoginScreen', { redirectTo: 'MyAccountScreen' });
-    }
+    navigation.navigate('MyAccountScreen');
   };
 
+
+
   return (
-    <View style={styles.container}>
+    <View style={styles.footer}>
       <View style={styles.iconContainer}>
-        <TouchableOpacity onPress={() => onAction('buscar')}>
+        <TouchableOpacity onPress={handleOrdersPress}>
           <View style={styles.iconWrapper}>
-            <Ionicons name="search-outline" size={28} color="#333" />
+            <Ionicons name="bag-outline" size={28} color="#333" />
           </View>
         </TouchableOpacity>
       </View>
 
       <View style={styles.iconContainer}>
-         <TouchableOpacity onPress={handleCartPress}>
+        <TouchableOpacity onPress={handleCartPress}>
           <View style={styles.iconWrapper}>
             <Ionicons name="cart-outline" size={28} color="#333" />
           </View>
@@ -43,7 +41,7 @@ const HeaderDown = ({ onAction }) => {
       </View>
 
       <View style={styles.iconContainer}>
-       <TouchableOpacity onPress={handleAccountPress}>
+        <TouchableOpacity onPress={handleAccountPress}>
           <View style={styles.iconWrapper}>
             <Ionicons name="person-outline" size={28} color="#333" />
           </View>
@@ -54,11 +52,24 @@ const HeaderDown = ({ onAction }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',    
-    paddingVertical: 30,
-    justifyContent: 'space-around',
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: FOOTER_HEIGHT,
     backgroundColor: '#EAEAEA',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingVertical: 10,
+    // Sombra iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Sombra Android
+    elevation: 5,
   },
   iconContainer: {
     alignItems: 'center',
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     backgroundColor: '#fff',
-    // Sombra iOS
+    // Sombra iOS para el iconWrapper si querés más profundidad
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -79,4 +90,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { FOOTER_HEIGHT };
 export default HeaderDown;

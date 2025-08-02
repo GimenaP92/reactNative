@@ -12,6 +12,9 @@ import {
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useGetUserDataQuery, usePutUserDataMutation } from '../../services/user/userApi';
+import HeaderDown from '../Header/HeaderDown';
+
+const FOOTER_HEIGHT = 70; 
 
 const EditProfileScreen = () => {
   const localId = useSelector(state => state.user.localId);
@@ -22,7 +25,9 @@ const EditProfileScreen = () => {
     skip: !localId,
   });
 
-  // Estado local para inputs
+  // Estados locales para inputs, ahora incluyendo name y lastName
+  const [name, setName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
 
@@ -32,6 +37,8 @@ const EditProfileScreen = () => {
   // Cuando carga userData, setear estado local
   useEffect(() => {
     if (userData) {
+      setName(userData.name || '');
+      setLastName(userData.lastName || '');
       setPhone(userData.phone || '');
       setAddress(userData.address || '');
     }
@@ -39,7 +46,7 @@ const EditProfileScreen = () => {
 
   const handleSave = async () => {
     try {
-      await putUserData({ localId, data: { phone, address } }).unwrap();
+      await putUserData({ localId, data: { name, lastName, phone, address } }).unwrap();
       Alert.alert('¡Éxito!', 'Datos guardados correctamente.');
       navigation.goBack();
     } catch (e) {
@@ -66,6 +73,22 @@ const EditProfileScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.label}>Nombre</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Ingrese nombre"
+        value={name}
+        onChangeText={setName}
+      />
+
+      <Text style={styles.label}>Apellido</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Ingrese apellido"
+        value={lastName}
+        onChangeText={setLastName}
+      />
+
       <Text style={styles.label}>Teléfono</Text>
       <TextInput
         style={styles.input}
@@ -94,6 +117,9 @@ const EditProfileScreen = () => {
           <Text style={styles.buttonText}>Guardar Cambios</Text>
         )}
       </TouchableOpacity>
+      <View style={styles.headerDownWrapper}>
+        <HeaderDown />
+      </View>
     </ScrollView>
   );
 };
@@ -137,6 +163,15 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  headerDownWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: FOOTER_HEIGHT,
+    backgroundColor: '#EAEAEA',
+    zIndex: 11,
   },
 });
 

@@ -1,9 +1,17 @@
 import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
+import HeaderDown from '../Header/HeaderDown';
+
+const FOOTER_HEIGHT = 70; 
+
 
 const OrderHistoryScreen = () => {
+  const userId = useSelector(state => state.user.localId);
   const orders = useSelector(state => state.orders.list);
+
+  const userOrders = orders.filter(order => order.userId === userId);
+
 
   const renderProduct = ({ item }) => (
     <View style={styles.productContainer}>
@@ -30,12 +38,19 @@ const OrderHistoryScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Ordenes de compra</Text>
+         {userOrders.length === 0 ? (
+      <Text style={styles.emptyText}>Aún no tienes órdenes de compra.</Text>
+    ) : (
       <FlatList
-        data={orders}
+        data={userOrders}
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderOrder}
         contentContainerStyle={{ paddingBottom: 100 }}
       />
+    )}
+       <View style={styles.headerDownWrapper}>
+      <HeaderDown />
+    </View>
     </View>
   );
 };
@@ -51,6 +66,21 @@ const styles = StyleSheet.create({
   productInfo: { flexDirection: 'row', justifyContent: 'space-between', flex: 1 },
   productTitle: { fontWeight: '600', flexShrink: 1 },
   productQuantity: { fontWeight: '600' },
+  emptyText: {
+  fontSize: 18,
+  textAlign: 'center',
+  marginTop: 40,
+  color: '#888',
+},
+headerDownWrapper: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  height: FOOTER_HEIGHT,
+  backgroundColor: '#EAEAEA',
+  zIndex: 11,
+},
 });
 
 export default OrderHistoryScreen;

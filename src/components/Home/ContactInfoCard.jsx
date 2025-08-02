@@ -5,11 +5,11 @@ import { View, Text, StyleSheet } from 'react-native';
 const ContactInfoCard = () => {
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>Contacto con la App</Text>
+      <Text style={styles.title}>Contacto con TravelToWorld</Text>
       <Text style={styles.text}>
         Si tenés alguna duda, consulta o querés brindarnos tu opinión, podés escribirnos a:
       </Text>
-      <Text style={styles.contact}>📧 contacto@tuapp.com</Text>
+      <Text style={styles.contact}>📧 contacto@traveltoworld.com</Text>
       <Text style={styles.text}>
         También podés llamarnos al teléfono: 
       </Text>

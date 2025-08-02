@@ -4,24 +4,36 @@ import Button from '../common/Button';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../features/cart/cartSlice';
+ import { useSelector } from 'react-redux';
+import HeaderDown from '../Header/HeaderDown';
+
+const FOOTER_HEIGHT = 70; 
 
 const DetailScreen = ({ navigation }) => {
   const route = useRoute();
   const { id, title, description, image1 } = route.params;
   const [loading, setLoading] = useState(false);
-
+  const localId = useSelector(state => state.user.localId);
   const dispatch = useDispatch();
 
   const handleBuy = () => {
-    setLoading(true);
+  setLoading(true);
 
-    dispatch(addToCart({ id, title, description, image1, quantity: 1 }));
+  dispatch(addToCart({ id, title, description, image1, quantity: 1 }));
 
-    setTimeout(() => {
-      setLoading(false);
+  setTimeout(() => {
+    setLoading(false);
+
+    if (localId) {
+    
       navigation.navigate('CartScreen');
-    }, 500);
-  };
+    } else {
+
+      navigation.navigate('LoginScreen');
+    }
+  }, 500);
+};
+
 
   return (
     <View style={styles.container}>
@@ -34,6 +46,9 @@ const DetailScreen = ({ navigation }) => {
         disabled={loading}
       />
       {loading && <ActivityIndicator size="large" color="#36173d" style={{ marginTop: 15 }} />}
+       <View style={styles.headerDownWrapper}>
+     {localId && <HeaderDown />}
+    </View>
     </View>
   );
 };
@@ -60,4 +75,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
   },
+headerDownWrapper: {
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  height: FOOTER_HEIGHT,
+  backgroundColor: '#EAEAEA',
+  zIndex: 11,
+},
 });

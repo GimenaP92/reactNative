@@ -8,8 +8,16 @@ const Header = () => {
   const canGoBack = navigation.canGoBack();
 
   const handlePress = () => {
+  const state = navigation.getState();
+  const availableRoutes = state?.routeNames || [];
+
+  if (availableRoutes.includes('HomeScreen')) {
     navigation.navigate('HomeScreen');
-  };
+  } else {
+    console.warn('HomeScreen no está disponible en este momento');
+  }
+};
+
 
   return (
     <View style={styles.container}>
