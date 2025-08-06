@@ -20,7 +20,7 @@ export const initSessionTable = async () => {
       address TEXT
     );
   `);
-   await migrateSessionTable();
+  await migrateSessionTable();
 };
 
 export const migrateSessionTable = async () => {
@@ -43,7 +43,6 @@ export const migrateSessionTable = async () => {
   }
 };
 
-
 export const saveSession = async (session) => {
   const { userEmail, localId, profileImage, phone, address, name, lastName } = session;
   await initDB();
@@ -54,6 +53,23 @@ export const saveSession = async (session) => {
   );
 };
 
+// Nueva función para actualizar sesión sin borrar la fila
+export const updateSession = async (session) => {
+  const { userEmail, localId, profileImage, phone, address, name, lastName } = session;
+  await initDB();
+  await db.runAsync(
+    `UPDATE session SET 
+      userEmail = ?, 
+      localId = ?, 
+      profileImage = ?, 
+      phone = ?, 
+      address = ?, 
+      name = ?, 
+      lastName = ?
+    WHERE id = (SELECT id FROM session LIMIT 1)`,
+    [userEmail, localId, profileImage, phone, address, name, lastName]
+  );
+};
 
 export const getSession = async () => {
   await initDB();

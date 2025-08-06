@@ -10,13 +10,12 @@ const CardsList = () => {
   const [cards, setCards] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Simulamos una carga como si viniera de una API o base de datos
   useEffect(() => {
     const fetchData = async () => {
       setTimeout(() => {
         setCards(cardsData);
         setLoading(false);
-      }, 2000); // espera 2 segundos simulando la carga
+      }, 2000); 
     };
 
     fetchData();

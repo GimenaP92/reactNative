@@ -1,23 +1,29 @@
 import React from 'react';
-import { View, StyleSheet, Text, ScrollView, SafeAreaView } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 import CategoryButtons from '../Categories/CategoriesButtons';
 import CustomCarousel from '../Home/CustomCarousel';
 import OffersCarousel from '../Home/OffersCarousel';
 import RefundPolicyCard from '../Home/RefundPolicyCard';
 import ContactInfoCard from '../Home/ContactInfoCard';
-import { useSelector } from 'react-redux';
 import HeaderDown from '../Header/HeaderDown';
+import HeaderLogin from '../Header/HeaderLogin';
+import { useSelector } from 'react-redux';
+import { useGetProductsQuery } from '../../services/shop/shopApi';
 
-const FOOTER_HEIGHT = 70; 
+const FOOTER_HEIGHT = 70;
 
 const HomeScreen = ({ navigation }) => {
-  const categoriesObject = useSelector(state => state.shop.categories);  
   const localId = useSelector(state => state.user.localId);
-  const categories = Object.keys(categoriesObject);
+
+  const { data: categoriesObject, isLoading, error } = useGetProductsQuery();
+  const categories = categoriesObject ? Object.keys(categoriesObject) : [];
 
   const handleCategorySelect = (category) => {
     navigation.navigate('CategoryScreen', { category });
   };
+
+  if (isLoading) return <ActivityIndicator size="large" color="#5a2b68" />;
+  if (error) return <Text>Error al cargar las categorías</Text>;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -34,7 +40,12 @@ const HomeScreen = ({ navigation }) => {
           <ContactInfoCard />
           <RefundPolicyCard />
         </ScrollView>
-          {localId && <HeaderDown />}
+        {localId ? (
+  <HeaderDown />
+) : (
+<HeaderLogin/>
+)}
+
       </View>
     </SafeAreaView>
   );
@@ -43,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#fff' },
   container: { flex: 1, position: 'relative' },
-  scrollContent: { padding: 10, paddingBottom: FOOTER_HEIGHT + 20 /* espacio para footer */ },
+  scrollContent: { padding: 10, paddingBottom: FOOTER_HEIGHT + 20 },
   title: {
     fontSize: 18,
     fontStyle: 'italic',
@@ -55,7 +66,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 15,
   },
-
 });
 
 export default HomeScreen;

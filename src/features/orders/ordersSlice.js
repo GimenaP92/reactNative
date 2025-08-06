@@ -6,6 +6,9 @@ const ordersSlice = createSlice({
     list: []
   },
   reducers: {
+    setOrders: (state, action) => {
+      state.list = action.payload;
+    },
     addOrder: (state, action) => {
       state.list.push(action.payload);
     },
@@ -13,5 +16,5 @@ const ordersSlice = createSlice({
   }
 });
 
-export const { addOrder } = ordersSlice.actions;
+export const { addOrder, setOrders } = ordersSlice.actions;
 export default ordersSlice.reducer;

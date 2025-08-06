@@ -1,5 +1,5 @@
 Aplicación Móvil de Viajes
-¡Bienvenido al repositorio de nuestra aplicación móvil de viajes! Esta aplicación está diseñada para ofrecer una experiencia de usuario fluida e intuitiva, permitiendo a los usuarios explorar y gestionar sus planes de viaje con facilidad.
+¡Bienvenido al repositorio de aplicación móvil de viajes! Esta aplicación está diseñada para ofrecer una experiencia de usuario fluida e intuitiva, permitiendo a los usuarios explorar y gestionar sus planes de viaje con facilidad.
 
 Descripción General
 Nuestra aplicación móvil de viajes es una plataforma integral que permite a los usuarios descubrir diversos destinos y actividades. Organizada por categorías, la aplicación presenta una amplia gama de productos de viaje, desde paquetes turísticos hasta alojamientos y experiencias locales.

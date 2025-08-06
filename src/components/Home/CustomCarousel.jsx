@@ -1,44 +1,58 @@
-// SimpleCarousel.js
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  ActivityIndicator
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useGetProductsByCategoryQuery } from '../../services/shop/shopApi';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const carouselItems = [
-  {
-    id: '1',
-    title: "Explora Machu Picchu",
-    text: "Una aventura inolvidable en Perú.",
-    image: "https://media.gq.com.mx/photos/620e915c43f71a078a35533f/master/pass/playa.jpg"
-  },
-  {
-    id: '2',
-    title: "Vuelo a Cusco",
-    text: "Viaja cómodo y seguro con nosotros.",
-    image: "https://media.vogue.mx/photos/5c0712bceccb76ff7079fef1/master/pass/playas__2473.jpg"
-  },
-  {
-    id: '3',
-    title: "Hotel en Valle Sagrado",
-    text: "Disfruta del lujo y la naturaleza.",
-    image: "https://example.com/hotel3.jpg"
-  }
-];
+const subcategories = ['nacional', 'latam', 'europa'];
 
-const SimpleCarousel = () => {
+const SimpleCarousel = ({ selectedCategory = 'paquetes' }) => {
+  const navigation = useNavigation();
+  const { data: products, isLoading, error } = useGetProductsByCategoryQuery(selectedCategory);
+
+  if (isLoading) return <ActivityIndicator />;
+  if (error) return <Text>Error al cargar productos</Text>;
+  if (!products) return <Text>No hay productos</Text>;
+
+  // Tomás 3 productos por subcategoría
+  const carouselItems = subcategories.flatMap(sub =>
+    products
+      .filter(p => p.subcategory === sub)
+      .slice(0, 3)
+  );
+
   return (
     <FlatList
       data={carouselItems}
       horizontal
       pagingEnabled
-      keyExtractor={item => item.id}
+      keyExtractor={(item) => item.id.toString()}
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => (
-        <View style={styles.card}>
-          <Image source={{ uri: item.image }} style={styles.cardImage} />
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => navigation.navigate('DetailScreen', {
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            description: item.description,
+            image1: item.image1
+          })}
+        >
+          <Image source={{ uri: item.image1 }} style={styles.cardImage} />
           <Text style={styles.cardTitle}>{item.title}</Text>
-          <Text style={styles.cardText}>{item.text}</Text>
-        </View>
+          <Text style={styles.cardText}>{item.description}</Text>
+        </TouchableOpacity>
       )}
     />
   );

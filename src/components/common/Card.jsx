@@ -2,13 +2,14 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const Card = ({ id, title, description, image1 }) => {
+const Card = ({ id, title, description, price, image1 }) => {
   const navigation = useNavigation();
 
 const handlePress = () => {
   navigation.navigate('DetailScreen', {
     id,
     title,
+    price,
     description,
     image1
   });

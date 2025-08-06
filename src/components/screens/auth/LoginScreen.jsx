@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation, route }) => {
     setLoading(true);
     try {
       const result = await triggerLogin({ email, password }).unwrap();
-      const { userEmail, localId, profileImage, phone, address } = result;
+      const { email: userEmail, localId, profileImage, phone, address } = result;
 
       if (persistSession) {
         await saveSession({ userEmail, localId, profileImage, phone, address });

@@ -11,7 +11,7 @@ const FOOTER_HEIGHT = 70;
 
 const DetailScreen = ({ navigation }) => {
   const route = useRoute();
-  const { id, title, description, image1 } = route.params;
+  const { id, title,price, description, image1 } = route.params;
   const [loading, setLoading] = useState(false);
   const localId = useSelector(state => state.user.localId);
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const DetailScreen = ({ navigation }) => {
   const handleBuy = () => {
   setLoading(true);
 
-  dispatch(addToCart({ id, title, description, image1, quantity: 1 }));
+  dispatch(addToCart({ id, title, description,price, image1, quantity: 1 }));
 
   setTimeout(() => {
     setLoading(false);
@@ -39,6 +39,7 @@ const DetailScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Image source={{ uri: image1 }} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
+      <Text style={styles.price}>USD{price}</Text>
       <Text style={styles.description}>{description}</Text>
       <Button
         title={loading ? '' : 'Comprar'}
@@ -71,6 +72,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
   },
+  price: {
+  fontSize: 20,
+  color: '#444',
+  marginBottom: 10,
+},
   description: {
     fontSize: 16,
     marginBottom: 10,

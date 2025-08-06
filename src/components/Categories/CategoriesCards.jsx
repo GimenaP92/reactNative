@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { FlatList, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlatList, View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import Card from '../common/Card';
-import { useSelector } from 'react-redux';
+import { useGetProductsByCategoryQuery } from '../../services/shop/shopApi';
 
 const subcategories = ['nacional', 'latam', 'europa'];
 
 const CategoryCards = ({ selectedCategory }) => {
-  const categories = useSelector(state => state.shop.categories);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
 
-  if (!selectedCategory || !categories[selectedCategory]) return null;
+  const { data: products, isLoading, error } = useGetProductsByCategoryQuery(selectedCategory);
 
-  const allItems = categories[selectedCategory];
+  if (!selectedCategory) return null;
+  if (isLoading) return <ActivityIndicator />;
+  if (error) return <Text>Error al cargar productos</Text>;
+  if (!products) return <Text>No hay productos</Text>;
+
   const filteredItems = selectedSubcategory
-    ? allItems.filter(item => item.subcategory === selectedSubcategory)
-    : allItems;
+    ? products.filter(item => item.subcategory === selectedSubcategory)
+    : products;
 
   return (
     <View>
@@ -28,15 +31,14 @@ const CategoryCards = ({ selectedCategory }) => {
             ]}
             onPress={() => setSelectedSubcategory(sub)}
           >
-           <Text
-            style={[
-              styles.subcategoryText,
-              selectedSubcategory === sub && styles.selectedText
-            ]}
-          >
-            {sub.charAt(0).toUpperCase() + sub.slice(1)}
-          </Text>
-
+            <Text
+              style={[
+                styles.subcategoryText,
+                selectedSubcategory === sub && styles.selectedText
+              ]}
+            >
+              {sub.charAt(0).toUpperCase() + sub.slice(1)}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -44,15 +46,17 @@ const CategoryCards = ({ selectedCategory }) => {
       <FlatList
         data={filteredItems}
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ paddingBottom: 100 }} 
+        contentContainerStyle={{ paddingBottom: 100 }}
         renderItem={({ item }) => (
           <Card
-            id={item.id}
-            title={item.title}
-            description={item.description}
-            image1={item.image1}
-            onPress={() => console.log(`${item.title} presionado`)}
-          />
+              id={item.id}
+              subcategory={item.subcategory}  
+              title={item.title}
+              price={item.price}
+              description={item.description}
+              image1={item.image1}
+            />
+
         )}
       />
     </View>
@@ -69,26 +73,22 @@ const styles = StyleSheet.create({
   subcategoryButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-     backgroundColor:'#e0e0e0',
+    backgroundColor: '#e0e0e0',
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#ccc',
   },
   selectedButton: {
-  backgroundColor: '#5a2b68',
-  color:'fff',
-},
-selectedText: {
-  color: '#fff',
-},
-
-subcategoryText: {
-  color: '#black', 
-  fontWeight: 'bold',
-  fontSize: 14,
-  
-},
-
+    backgroundColor: '#5a2b68',
+  },
+  selectedText: {
+    color: '#fff',
+  },
+  subcategoryText: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
 });
 
 export default CategoryCards;

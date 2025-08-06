@@ -1,17 +1,33 @@
-import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import HeaderDown from '../Header/HeaderDown';
+import { useGetOrdersByUserIdQuery } from '../../services/shop/shopApi';
+import { useFocusEffect } from '@react-navigation/native';
 
-const FOOTER_HEIGHT = 70; 
-
+const FOOTER_HEIGHT = 70;
 
 const OrderHistoryScreen = () => {
   const userId = useSelector(state => state.user.localId);
-  const orders = useSelector(state => state.orders.list);
+  const dispatch = useDispatch();
 
-  const userOrders = orders.filter(order => order.userId === userId);
+  const {
+    data: userOrders = [],
+    isLoading,
+    isError,
+    refetch
+  } = useGetOrdersByUserIdQuery(userId, { skip: !userId });
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userId) {
+        refetch();
+      }
+    }, [userId, refetch])
+  );
+
+  if (isLoading) return <Text>Cargando órdenes...</Text>;
+  if (isError) return <Text>Error al cargar las órdenes.</Text>;
 
   const renderProduct = ({ item }) => (
     <View style={styles.productContainer}>
@@ -37,23 +53,24 @@ const OrderHistoryScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Ordenes de compra</Text>
-         {userOrders.length === 0 ? (
-      <Text style={styles.emptyText}>Aún no tienes órdenes de compra.</Text>
-    ) : (
-      <FlatList
-        data={userOrders}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderOrder}
-        contentContainerStyle={{ paddingBottom: 100 }}
-      />
-    )}
-       <View style={styles.headerDownWrapper}>
-      <HeaderDown />
-    </View>
+      <Text style={styles.header}>Órdenes de compra</Text>
+      {userOrders.length === 0 ? (
+        <Text style={styles.emptyText}>Aún no tienes órdenes de compra.</Text>
+      ) : (
+        <FlatList
+          data={userOrders}
+          keyExtractor={item => item.id}
+          renderItem={renderOrder}
+          contentContainerStyle={{ paddingBottom: 100 }}
+        />
+      )}
+      <View style={styles.headerDownWrapper}>
+        <HeaderDown />
+      </View>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, backgroundColor: '#fff' },
@@ -67,20 +84,20 @@ const styles = StyleSheet.create({
   productTitle: { fontWeight: '600', flexShrink: 1 },
   productQuantity: { fontWeight: '600' },
   emptyText: {
-  fontSize: 18,
-  textAlign: 'center',
-  marginTop: 40,
-  color: '#888',
-},
-headerDownWrapper: {
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  right: 0,
-  height: FOOTER_HEIGHT,
-  backgroundColor: '#EAEAEA',
-  zIndex: 11,
-},
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 40,
+    color: '#888',
+  },
+  headerDownWrapper: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: FOOTER_HEIGHT,
+    backgroundColor: '#EAEAEA',
+    zIndex: 11,
+  },
 });
 
 export default OrderHistoryScreen;

@@ -6,12 +6,14 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { addOrder } from '../../features/orders/ordersSlice';
 import HeaderDown from '../Header/HeaderDown';
+import { useCreateOrderMutation } from '../../services/shop/shopApi';
 
 const FOOTER_HEIGHT = 70; 
 
 
 const CartScreen = () => {
   const cartItems = useSelector((state) => state.cart.items);
+  const [createOrder, { isLoading: creatingOrder, error }] = useCreateOrderMutation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const userId = useSelector((state) => state.user.localId);
@@ -35,22 +37,36 @@ const CartScreen = () => {
     0
   );
 
-  const handleCheckout = () => {
-  setLoading(true);
+ 
+  const handleCheckout = async () => {
+    if (!userId) {
+      alert('Debes iniciar sesión para realizar una compra.');
+      return;
+    }
 
-  setTimeout(() => {
-    dispatch(addOrder({
-       userId,
-      items: cartItems,
-      total: totalPrice,
-      date: new Date().toISOString(),
-    }));
-    dispatch(clearCart());
-    setLoading(false);
-    navigation.navigate('OrderHistoryScreen');
-  }, 2000);
-};
+    setLoading(true);
 
+    try {
+      const orderData = {
+        userId,
+        items: cartItems,
+        total: totalPrice,
+        date: new Date().toISOString(),
+      };
+
+      
+      await createOrder(orderData).unwrap();
+
+      dispatch(clearCart());
+      navigation.navigate('OrderHistoryScreen');
+
+    } catch (err) {
+      console.error('Error creando la orden:', err);
+      alert('Hubo un error al crear la orden. Por favor, intenta nuevamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>

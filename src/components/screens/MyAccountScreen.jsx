@@ -104,7 +104,10 @@ const { data: userData, isLoading: userDataLoading } = useGetUserDataQuery(local
               { backgroundColor: '#ccc', justifyContent: 'center', alignItems: 'center' },
             ]}
           >
-            <Text style={{ color: '#666' }}>No hay foto</Text>
+           <Image
+      source={{ uri: 'https://res.cloudinary.com/dbtfna8ev/image/upload/v1754328305/Avatar_ocdtii.webp' }}
+      style={styles.avatar}
+    />
           </View>
         )}
 
@@ -119,6 +122,7 @@ const { data: userData, isLoading: userDataLoading } = useGetUserDataQuery(local
       </View>
 
       <Text style={styles.name}>{userEmail || 'Usuario'}</Text>
+
 
     <View style={styles.infoContainer}>
     <Text style={styles.label}>Nombre</Text>
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: {
     position: 'relative',
-    shadowColor: '#ff4845',
+    shadowColor: '#f8f4f9',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 15,
@@ -186,7 +190,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    marginBottom: 20,
   },
   cameraIconWrapper: {
     position: 'absolute',

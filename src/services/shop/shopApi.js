@@ -6,25 +6,52 @@ export const shopApi = createApi({
   reducerPath: "shopApi",
   baseQuery: fetchBaseQuery({ baseUrl: baseRTDBURL }),
   endpoints: (builder) => ({
-    getProducts: builder.query({ query: () => "products.json" }),
-    getProductById: builder.query({ query: (id) => `products/${id}.json` }),
-    getCategories: builder.query({ query: () => "categories.json" }),
+
+    getProducts: builder.query({
+      query: () => "products.json",
+    }),
     getProductsByCategory: builder.query({
-      query: (category) => `products.json?orderBy="category"&equalTo="${category}"`,
+      query: (category) => `products/${category}.json`,
       transformResponse: (response) => Object.values(response),
     }),
-    getCart: builder.query({ query: () => "cart.json" }),
+
+    getProductById: builder.query({
+      query: ({ subcategory, id }) => `products/${subcategory}/${id}.json`,
+    }),
+
+    getCategories: builder.query({ query: () => "categories.json" }),
+
     getOrders: builder.query({ query: () => "orders.json" }),
-    getOrderById: builder.query({ query: (id) => `orders/${id}.json` }),
+  getOrdersByUserId: builder.query({
+  query: (userId) =>
+    `orders.json?orderBy="userId"&equalTo="${userId}"`,
+  transformResponse: (response) => {
+    if (!response) return [];
+    return Object.entries(response).map(([id, value]) => ({
+      id,
+      ...value,
+    }));
+  },
+}),
+
+
+    createOrder: builder.mutation({
+      query: (order) => ({
+        url: `orders.json`,   
+        method: "POST",
+        body: order,
+      }),
+    }),
+
   }),
 });
 
 export const {
-  useGetCategoriesQuery,
-  useGetProductsByCategoryQuery,
   useGetProductsQuery,
+  useGetProductsByCategoryQuery,
   useGetProductByIdQuery,
-  useGetCartQuery,
+  useGetCategoriesQuery,
   useGetOrdersQuery,
-  useGetOrderByIdQuery,
+  useGetOrdersByUserIdQuery,
+  useCreateOrderMutation, 
 } = shopApi;
