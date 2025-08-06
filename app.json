@@ -20,14 +20,18 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.gimenapascuale.probandonative"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "CLOUDINARY_CLOUD_NAME": "dbtfna8ev",
-      "CLOUDINARY_UPLOAD_PRESET": "user_photos"
+      "CLOUDINARY_UPLOAD_PRESET": "user_photos",
+      "eas": {
+        "projectId": "4f7a0420-11b5-43ed-ae29-a637fff88b73"
+      }
     },
     "plugins": [
       "expo-sqlite"

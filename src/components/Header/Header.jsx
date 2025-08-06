@@ -28,7 +28,7 @@ const Header = () => {
       )}
       <TouchableOpacity onPress={handlePress} activeOpacity={0.8} style={styles.brand}>
         <Image
-          source={require('../../assets/logo.png')}
+          source={require('../../../assets/icon.png')}
           style={styles.logo}
         />
         <Text style={styles.text}>TravelToWorld</Text>

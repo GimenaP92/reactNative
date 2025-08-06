@@ -1,29 +1,58 @@
-Aplicación Móvil de Viajes
-¡Bienvenido al repositorio de aplicación móvil de viajes! Esta aplicación está diseñada para ofrecer una experiencia de usuario fluida e intuitiva, permitiendo a los usuarios explorar y gestionar sus planes de viaje con facilidad.
+📱 Proyecto Final - TravelToWorld (React Native)
+Este es mi primer proyecto desarrollado con React Native como parte del curso de desarrollo móvil. La aplicación es una tienda simple de viajes organizada por categorías y subcategorías, donde los usuarios pueden explorar, ver detalles y realizar compras, con autenticación y persistencia de sesión.
 
-Descripción General
-Nuestra aplicación móvil de viajes es una plataforma integral que permite a los usuarios descubrir diversos destinos y actividades. Organizada por categorías, la aplicación presenta una amplia gama de productos de viaje, desde paquetes turísticos hasta alojamientos y experiencias locales.
+🧠 Aprendizajes clave
+✅ Primer experiencia usando React Native
+✅ Integración de Firebase para autenticación y datos
+✅ Almacenamiento de imágenes en Cloudinary
+✅ Manejo de permisos de cámara
+✅ Persistencia de sesión con SQLite
+✅ Compilación de la app con EAS Build para Android
 
-Características Principales
-Exploración de Categorías y Productos: Navega a través de categorías de viaje bien definidas para encontrar productos que se adapten a tus intereses y necesidades.
+🛒 Funcionalidades principales
+✅ Visualización de productos por categorías y subcategorías
 
-Autenticación de Usuario Segura:
+🔍 Búsqueda de productos por ID
 
-Inicio de Sesión: Accede a tu cuenta de forma segura utilizando tus credenciales.
+🔒 Registro e inicio de sesión con Firebase Auth
 
-Registro de Usuario: Crea una nueva cuenta de manera rápida y sencilla.
+🛍️ Agregar al carrito y realizar compras (requiere login)
 
-Gestión de Imágenes en la Nube:
+👤 Perfil de usuario con posibilidad de editar datos personales
 
-Carga de Imágenes con Cloudinary: Sube y gestiona imágenes de manera eficiente utilizando la integración con Cloudinary, asegurando un almacenamiento y entrega optimizados.
+📷 Tomar y subir una foto de perfil con permisos de cámara
 
-Función de Cámara para Perfil: Sube tu foto de perfil directamente desde la cámara de tu dispositivo, personalizando tu experiencia en la aplicación.
+☁️ Imágenes de productos y usuarios almacenadas en Cloudinary
 
-Tecnologías Utilizadas
-Firebase Authentication: Para la gestión de usuarios, incluyendo el inicio de sesión y el registro, garantizando un sistema de autenticación robusto y seguro.
+💾 Persistencia de sesión con SQLite
 
-Cloudinary: Como solución de gestión de activos digitales para el almacenamiento, optimización y entrega de imágenes.
+📥 Descargar APK
+Puedes descargar la app compilada para Android desde el siguiente enlace:
 
-Funcionalidad de Cámara Nativa: Integración con las capacidades de la cámara del dispositivo para la carga de fotos de perfil.
+👉https://expo.dev/accounts/gimenapascuale/projects/probando-native/builds/842619c7-0fef-4ac9-9144-0b2897fde69a
 
-¡Esperamos que disfrutes explorando y utilizando nuestra aplicación de viajes!
+## 📱 Escanea el código QR para instalar
+
+¡Escaneá el siguiente QR con tu celular para instalar la app!
+
+![QR de instalación](./assets/qr.png)
+
+
+🛠️ Tecnologías utilizadas
+-React Native
+
+-Expo
+
+-Firebase Auth
+
+-Firebase Realtime Database / Firestore
+
+-SQLite
+
+-Cloudinary
+
+-React Navigation
+
+-Redux Toolkit 
+
+-EAS Build para compilación nativa
