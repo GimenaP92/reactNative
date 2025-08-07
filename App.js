@@ -6,6 +6,8 @@ import { StatusBar } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './src/store';
 import { initSessionTable } from './src/db';
+import Toast from 'react-native-toast-message';
+
 
 
 export default function App() {
@@ -28,6 +30,7 @@ export default function App() {
         <StatusBar barStyle="light-content" backgroundColor="#36173d" />
         <Header />
         <StackNavigator />
+              <Toast /> 
           </NavigationContainer>
     </Provider>
   );

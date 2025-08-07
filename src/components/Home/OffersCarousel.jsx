@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     width: screenWidth * 0.75,
     marginHorizontal: screenWidth * 0.125 / 2,
     padding: 15,
+     margin:15,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.25,

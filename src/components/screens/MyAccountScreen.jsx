@@ -153,7 +153,7 @@ const { data: userData, isLoading: userDataLoading } = useGetUserDataQuery(local
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#36173d', marginTop: 20 }]}
+        style={[styles.button, { backgroundColor: '#36173d', marginTop: 20, marginBottom: 30 }]}
         onPress={handleLogout}
         disabled={loading}
       >
@@ -173,9 +173,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f8f4f9',
     paddingHorizontal: 30,
-    paddingTop: 50,
+    paddingTop: 30,
     alignItems: 'center',
     paddingBottom: 50,
+    
   },
   avatarWrapper: {
     position: 'relative',
