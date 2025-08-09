@@ -1,16 +1,8 @@
-📱 Proyecto Final - TravelToWorld (React Native)
-Este es mi primer proyecto desarrollado con React Native como parte del curso de desarrollo móvil. La aplicación es una tienda simple de viajes organizada por categorías y subcategorías, donde los usuarios pueden explorar, ver detalles y realizar compras, con autenticación y persistencia de sesión.
+📱 Proyecto Final - TravelToWorld (React Native) Este es mi primer proyecto desarrollado con React Native como parte del curso de desarrollo móvil. La aplicación es una tienda simple de viajes organizada por categorías y subcategorías, donde los usuarios pueden explorar, ver detalles y realizar compras, con autenticación y persistencia de sesión.
 
-🧠 Aprendizajes clave
-✅ Primer experiencia usando React Native
-✅ Integración de Firebase para autenticación y datos
-✅ Almacenamiento de imágenes en Cloudinary
-✅ Manejo de permisos de cámara
-✅ Persistencia de sesión con SQLite
-✅ Compilación de la app con EAS Build para Android
+🧠 Aprendizajes clave ✅ Primer experiencia usando React Native ✅ Integración de Firebase para autenticación y datos ✅ Almacenamiento de imágenes en Cloudinary ✅ Manejo de permisos de cámara ✅ Persistencia de sesión con SQLite ✅ Compilación de la app con EAS Build para Android
 
-🛒 Funcionalidades principales
-✅ Visualización de productos por categorías y subcategorías
+🛒 Funcionalidades principales ✅ Visualización de productos por categorías y subcategorías
 
 🔍 Búsqueda de productos por ID
 
@@ -26,20 +18,16 @@ Este es mi primer proyecto desarrollado con React Native como parte del curso de
 
 💾 Persistencia de sesión con SQLite
 
-📥 Descargar APK
-Puedes descargar la app compilada para Android desde el siguiente enlace:
+📥 Descargar APK Puedes descargar la app compilada para Android desde el siguiente enlace:
 
-👉https://expo.dev/accounts/gimenapascuale/projects/probando-native/builds/842619c7-0fef-4ac9-9144-0b2897fde69a
+👉https://expo.dev/accounts/gimenapascuale/projects/probando-native/builds/24802e9e-5237-442b-a9f7-02322f92c12e
 
-## 📱 Escanea el código QR para instalar
-
+📱 Escanea el código QR para instalar
 ¡Escaneá el siguiente QR con tu celular para instalar la app!
 
-![QR de instalación](./assets/qr.png)
+QR de instalación
 
-
-🛠️ Tecnologías utilizadas
--React Native
+🛠️ Tecnologías utilizadas -React Native
 
 -Expo
 
@@ -53,6 +41,6 @@ Puedes descargar la app compilada para Android desde el siguiente enlace:
 
 -React Navigation
 
--Redux Toolkit 
+-Redux Toolkit
 
 -EAS Build para compilación nativa
